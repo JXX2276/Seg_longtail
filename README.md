@@ -93,21 +93,6 @@ Seg_longtail\
 powershell -ExecutionPolicy Bypass -File scripts\run_teacher_500.ps1
 ```
 
-该步骤正常完成后必须存在：
-
-```text
-workspace/teacher/generated_masks/labels/train/
-workspace/dataset/data.yaml
-workspace/dataset/labels/train/
-workspace/dataset/labels/val/
-```
-
-可先生成并检查 Stage 2、Stage 3 的确定性采样计划，不启动 GPU 训练：
-
-```powershell
-.\.venv\Scripts\python.exe scripts\train_pipeline.py --build-only
-```
-
 启动完整三阶段训练：
 
 ```powershell
