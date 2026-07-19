@@ -1,0 +1,24 @@
+model: models/yolo11s-seg.pt
+workspace: workspace/pipeline/stage1
+run_name: stage1_pretrained_epoch10
+wandb_project: Seg_longtail
+wandb_group: stage1-stage2-stage3
+training:
+  image_size: 1024
+  batch: 16
+  epochs: 10
+  patience: 0
+  device: "0"
+  workers: 4
+  optimizer: AdamW
+  lr0: 0.0002
+  lrf: 0.10
+  freeze: 10
+  warmup_epochs: 5.0
+  warmup_bias_lr: 0.10
+  weight_decay: 0.0005
+  mosaic: 1.0
+  close_mosaic: 3
+  copy_paste: 0.15
+  seed: 338
+  save_period: 5

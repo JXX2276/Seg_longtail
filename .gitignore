@@ -1,0 +1,12 @@
+.venv/
+.cache/
+models/
+workspace/
+datasets/
+wandb/
+*.pt
+*.pth
+*.ckpt
+__pycache__/
+.ruff_cache/
+.pytest_cache/

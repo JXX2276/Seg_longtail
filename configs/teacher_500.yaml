@@ -1,0 +1,82 @@
+dataset:
+  root: datasets/nuimages-v1.0-all-samples
+  metadata_root: datasets/nuimages-v1.0-all-metadata
+  version: v1.0-train
+  workspace: workspace/teacher
+  max_samples: 500
+  val_fraction: 0.20
+  split_seed: 336
+  image_mode: hardlink
+
+models:
+  student: models/yolo11s-seg.pt
+  grounding_dino: models/grounding-dino-tiny
+  semantic_teacher: models/Qwen2.5-VL-7B-Instruct
+  segment_teacher: models/sam2.1-hiera-base-plus
+
+target:
+  name: movable_object.longtail
+  student_class_ids: [0, 1, 2, 3]
+  classes:
+    - id: 0
+      name: movable_object.barrier
+      description: a temporary movable road barrier or barricade
+      prompts: [road barrier, traffic barrier, barricade]
+      negative_examples: [guardrail, fence, wall, traffic cone, debris]
+    - id: 1
+      name: movable_object.debris
+      description: loose, discarded, detached, or fallen material on or near the road
+      prompts: [road debris, loose debris, discarded object on road]
+      negative_examples: [vehicle, person, traffic sign, road marking, barrier, traffic cone]
+    - id: 2
+      name: movable_object.pushable_pullable
+      description: a movable object designed to be pushed or pulled, such as a cart or trolley
+      prompts: [pushable object, pullable object, cart, trolley]
+      negative_examples: [vehicle, bicycle, stroller with person, debris, barrier]
+    - id: 3
+      name: movable_object.trafficcone
+      description: a portable traffic cone used to guide or restrict traffic
+      prompts: [traffic cone, road cone, construction cone]
+      negative_examples: [bollard, barrier, traffic sign, debris]
+
+inference:
+  keyframes_only: true
+  use_student: false
+  student_confidence: 0.03
+  student_iou: 0.70
+  student_image_size: 1024
+  grounding_box_threshold: 0.10
+  grounding_text_threshold: 0.10
+  grounding_tile_grid: 1
+  grounding_tile_overlap: 0.20
+  merge_iou: 0.50
+  candidate_max_area_ratio: 0.20
+  max_candidates_per_image: 16
+  semantic_batch_size: 12
+  semantic_crop_size: 224
+  qwen_gpu_memory: 13GiB
+  qwen_cpu_memory: 48GiB
+  qwen_offload_folder: workspace/qwen_offload
+  crop_expansion: 0.30
+  semantic_accept: 0.70
+  semantic_reject: 0.25
+  max_new_tokens: 64
+  max_targets_per_image: 10
+  safety_warmup_candidates: 40
+  max_target_acceptance_rate: 0.80
+  sam_mask_threshold: 0.0
+
+training:
+  image_size: 1024
+  batch: 16
+  epochs: 10
+  patience: 0
+  device: "0"
+  workers: 4
+
+monitoring:
+  wandb:
+    enabled: true
+    mode: online
+    project: Seg_longtail
+    group: stage1-stage2-stage3
